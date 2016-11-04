@@ -1,1 +1,22 @@
 ;;;; Family Tree program
+
+(defstruct person
+	name
+	spouse
+	parent
+	sibling
+	halfsibling
+	ancestor
+	cousin
+)
+( setf FamilyTree (make-hash-table :test 'equal))
+
+;;; Creates person "Bill" and "Jim" and puts them in hashtable FamilyTree (Jim is the parent of Bill)
+(setf personTemp (make-person :name "Bill" :parent "Jim"))
+(setf (gethash "Bill" FamilyTree) personTemp)
+(setf personTemp (make-person :name "Jim"))
+(setf (gethash "Jim" FamilyTree) personTemp)
+
+;;; Access Bill or Jim
+(gethash "Bill" FamilyTree)
+(gethash "Jim" FamilyTree)
