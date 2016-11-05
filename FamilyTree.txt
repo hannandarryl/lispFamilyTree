@@ -20,3 +20,15 @@
 ;;; Access Bill or Jim
 (gethash "Bill" FamilyTree)
 (gethash "Jim" FamilyTree)
+
+;;; Hard coding file path for now
+(setf inputFile (open "~/lispFamilyTree/testFiles/test3.txt"))
+
+;;; Build list of lines so we can forget all this file stuff
+(setf filelist
+	(loop for line = (read-line inputFile nil)
+          while line
+          collect line))
+
+;;; Testing that file was read in, can comment out later
+(print (first filelist))
