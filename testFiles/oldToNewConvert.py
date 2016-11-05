@@ -13,9 +13,7 @@ i = open('./' + inputName, 'r')
 newStrings = []
 
 for line in i:
-	if line.endswith('\n'):
-		line = line[:-1]
-	newStrings.append('(' + line + ')\n')
+	newStrings.append('(' + line.strip() + ')\n')
 i.close()
 
 o = open('./' + inputName, 'w')
