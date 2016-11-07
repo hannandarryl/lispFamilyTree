@@ -3,7 +3,7 @@
 (defstruct person
 	name
 	spouse
-	parent
+	parents
 	sibling
 	halfsibling
 	ancestor
@@ -12,17 +12,18 @@
 ( setf FamilyTree (make-hash-table :test 'equal))
 
 ;;; Creates person "Bill" and "Jim" and puts them in hashtable FamilyTree (Jim is the parent of Bill)
-(setf personTemp (make-person :name "Bill" :parent "Jim"))
-(setf (gethash "Bill" FamilyTree) personTemp)
-(setf personTemp (make-person :name "Jim"))
-(setf (gethash "Jim" FamilyTree) personTemp)
+;;; (setf personTemp (make-person :name "Bill" :parents "Jim"))
+;;; (setf (gethash "Bill" FamilyTree) personTemp)
+;;; (setf personTemp (make-person :name "Jim"))
+;;; (setf (gethash "Jim" FamilyTree) personTemp)
 
 ;;; Access Bill or Jim
-(gethash "Bill" FamilyTree)
-(gethash "Jim" FamilyTree)
+;;; (gethash "Bill" FamilyTree)
+;;; (gethash "Jim" FamilyTree)
 
 ;;; Hard coding file path for now
-(setf inputFile (open "~/lispFamilyTree/testFiles/test3.txt"))
+;;; Note: Change this path to the absolute path of the test file you wish to run
+(setf inputFile (open "~/lispFamilyTree/testFiles/canWeAddStuff.txt"))
 
 ;;; Build list of lines so we can forget all this file stuff
 (setf filelist
@@ -31,4 +32,32 @@
           collect line))
 
 ;;; Testing that file was read in, can comment out later
-(print (first filelist))
+;;; (print (first filelist))
+
+;;; Handle the E query
+(defun E(p1 p2 &optional c)
+	;;; See if the first parent exists and add them if they do not
+	(if (not (gethash p1 FamilyTree))
+		(setf (gethash p1 FamilyTree) (make-person :name p1)))
+	;;; See if the second parent exists and add them if they do not
+	(if (not (gethash p2 FamilyTree))
+		(setf (gethash p2 FamilyTree) (make-person :name p2)))
+	;;; Assign the parameters to point to the actual person instead of a string representing their name
+	(setf p1 (gethash p1 FamilyTree))
+	(setf p2 (gethash p2 FamilyTree))
+	;;; Add the child if they exist
+	(if (not(and (gethash c FamilyTree) (c)))
+		(setf (gethash c FamilyTree) (make-person :name c :parents list(p1 p2)))))
+
+;;; Handle the various queries
+;;; Cannot figure out how to call line from file as a function
+;;; This should happen below
+(defun processFile()
+	(dolist(fileline filelist)
+		(print fileline)))
+
+;;; Run the process
+(processFile)
+
+;;; Count of how many are in hashtable to see if they were really added
+(print(hash-table-count FamilyTree))
