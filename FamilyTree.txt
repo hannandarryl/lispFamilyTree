@@ -45,8 +45,8 @@
 ;;; This should happen below
 (defun processFile()
 	(loop for line = (read inputFile nil)
-          while line
-		do (first line)))
+		while line
+		do (funcall (first line) (second line) (third line) (fourth line))))
 
 ;;; Run the process
 (processFile)
