@@ -25,15 +25,6 @@
 ;;; Note: Change this path to the absolute path of the test file you wish to run
 (setf inputFile (open "~/lispFamilyTree/testFiles/canWeAddStuff.txt"))
 
-;;; Build list of lines so we can forget all this file stuff
-(setf filelist
-	(loop for line = (read-line inputFile nil)
-          while line
-          collect line))
-
-;;; Testing that file was read in, can comment out later
-;;; (print (first filelist))
-
 ;;; Handle the E query
 (defun E(p1 p2 &optional c)
 	;;; See if the first parent exists and add them if they do not
@@ -53,11 +44,13 @@
 ;;; Cannot figure out how to call line from file as a function
 ;;; This should happen below
 (defun processFile()
-	(dolist(fileline filelist)
-		(print fileline)))
+	(loop for line = (read inputFile nil)
+          while line
+		do (first line)))
 
 ;;; Run the process
 (processFile)
 
 ;;; Count of how many are in hashtable to see if they were really added
-(print(hash-table-count FamilyTree))
+(print "The count of people in the hash table is ")
+(print (hash-table-count FamilyTree))
