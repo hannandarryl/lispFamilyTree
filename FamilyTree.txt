@@ -37,8 +37,8 @@
 	(setf p1 (gethash p1 FamilyTree))
 	(setf p2 (gethash p2 FamilyTree))
 	;;; Add the child if they exist
-	(if (not(and (gethash c FamilyTree) (c)))
-		(setf (gethash c FamilyTree) (make-person :name c :parents list(p1 p2)))))
+	(if (not(gethash c FamilyTree) )
+		(setf (gethash c FamilyTree) (make-person :name c :parents (list p1 p2)))))
 
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function
