@@ -20,12 +20,15 @@
 
 ;;; Hard coding file path for now
 ;;; Note: Change this path to the absolute path of the test file you wish to run
-(setf inputFile (open "~/lispFamilyTree/testFiles/canWeAddStuff.txt"))
+(setf inputFile (open "~/lispFamilyTree/testFiles/tryingWQuery.txt"))
 
 ;;; Get the parents of the person
 (defun getParents(p)
-	let (setq person (gethash p FamilyTree))
-		person-parents)
+	(progn (setf parents '())
+		(setf theperson (gethash p FamilyTree))
+		(loop for parent in (person-parents theperson)
+		do (progn (setf parentObj (gethash parent FamilyTree))
+		(append parents parentObj)))))
 
 ;;; Get the siblings of the person
 ;(defun getSiblings(p)
@@ -41,21 +44,20 @@
 (defun E(p1 p2 &optional c)
 	;;; See if the first parent exists and add them if they do not
 	(if (not (gethash p1 FamilyTree))
-		(setf firstperson (make-person :name p1))
+		(setf firstperson (make-person :name p1 :spouse '()))
 		(setf firstperson (gethash p1 FamilyTree)))
 	;;; See if the second parent exists and add them if they do not
 	(if (not (gethash p2 FamilyTree))
-		(setf secondperson (make-person :name p2))
+		(setf secondperson (make-person :name p2 :spouse '()))
 		(setf secondperson (gethash p2 FamilyTree)))
+	;;; Add the spouses
+	(append (person-spouse firstperson) p2)
+	(append (person-spouse secondperson) p1)
 	;;; Add the child if they exist
 	(if (not(gethash c FamilyTree))
-		(setf child (make-person :name c :parents (list firstperson secondperson)))
-		(progn(setf child (gethash c FamilyTree))
-			(setf (person-parents child) (list firstperson secondperson))))
-	;;; Add the child to the parents lists of children
-	(if (not(null child))
-		(progn(append (person-children firstperson) child)
-			(append (person-children secondperson) child)))
+		(setf child (make-person :name c :parents (list p1 p2)))
+		(progn (setf (person-children firstperson) c)
+			(setf (person-children secondperson) c)))
 	;;; Add all the people to the hashtable
 	(if (not (gethash p1 FamilyTree))
 		(setf (gethash p1 FamilyTree) firstperson))
@@ -65,8 +67,11 @@
 		(setf (gethash c FamilyTree) child)))
 
 ;;; Handle the W query
-(defun W(p r)
-			
+(defun W(r p deadVar)
+	;;; Handle parent query
+	(if (string= r "PARENT")
+		(loop for theperson in (getParents p)
+			do (print theperson))))
 
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function
