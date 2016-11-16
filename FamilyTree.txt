@@ -71,7 +71,7 @@
 	;;; Handle parent query
 	(if (string= r "PARENT")
 		(loop for theperson in (getParents p)
-			do (print theperson))))
+			do (print (person-name theperson)))))
 
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function
