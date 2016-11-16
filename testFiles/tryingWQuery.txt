@@ -1,2 +1,4 @@
 (E Bob Nancy Jane)
+(E Bob Nancy Sarah)
 (W Parent Jane)
+(W Sibling Jane)

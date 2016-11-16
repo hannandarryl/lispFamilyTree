@@ -24,25 +24,20 @@
 
 ;;; Get the parents of the person
 (defun getParents(p)
-	(progn (setf parents '())
-		(setf theperson (gethash p FamilyTree))
-		(loop for parent in (person-parents theperson)
-		do (progn (setf parentObj (gethash parent FamilyTree))
-		(append parents parentObj)))))
+	(setf parents (loop for parent in (person-parents (gethash p FamilyTree))
+		collect parent)))
 
 ;;; Get the siblings of the person
-;(defun getSiblings(p)
-;	(setf siblings (list ()))
-;	(let (setq person (gethash p FamilyTree)
-;		if (not(null (first (person-parents)))
-;			append(siblings (first (person-parents))-children)
-;		if (not(null (second (person-parents)))
-;			append(siblings (second (person-parents))-children)
-;		siblings))
+(defun getSiblings(p)
+	(setf siblings (remove p (union 
+		(loop for child in (person-children (gethash (first (person-parents (gethash p FamilyTree))) FamilyTree))
+			collect child)
+		(loop for child in (person-children (gethash (second (person-parents (gethash p FamilyTree))) FamilyTree))
+			collect child)))))
 
 
 ;;; Get cousins
-(defun getCousins (p deg rem)
+;(defun getCousins (p deg rem)
 		
 
 
@@ -63,11 +58,11 @@
 ;;; assuming when you union two ancestor lists, the earliest common ancestor will be the first item?
 
 ;;; opposite of getAncestorsDeep
-(defun getDescendantsDeep (p n)
-	(setf descendants(vector nil))  ;;; trying to create a list to append to after each recursive call
-	(if (not (person-children p))
-	nil)
-	(loop for theperson in (person-children p)
+;(defun getDescendantsDeep (p n)
+;	(setf descendants(vector nil))  ;;; trying to create a list to append to after each recursive call
+;	(if (not (person-children p))
+;	nil)
+;	(loop for theperson in (person-children p)
 		
 
 
@@ -75,34 +70,40 @@
 (defun E(p1 p2 &optional c)
 	;;; See if the first parent exists and add them if they do not
 	(if (not (gethash p1 FamilyTree))
-		(setf firstperson (make-person :name p1 :spouse '()))
+		(setf firstperson (make-person :name p1 :spouse '() :children '()))
 		(setf firstperson (gethash p1 FamilyTree)))
 	;;; See if the second parent exists and add them if they do not
 	(if (not (gethash p2 FamilyTree))
-		(setf secondperson (make-person :name p2 :spouse '()))
+		(setf secondperson (make-person :name p2 :spouse '() :children '()))
 		(setf secondperson (gethash p2 FamilyTree)))
 	;;; Add the spouses
-	(append (person-spouse firstperson) p2)
-	(append (person-spouse secondperson) p1)
+	(if (not(find p2 (person-spouse firstperson)))
+		(setf (person-spouse firstperson) (append (person-spouse firstperson) (list p2))))
+	(if (not(find p1 (person-spouse secondperson)))
+		(setf (person-spouse secondperson) (append (person-spouse secondperson) (list p1))))
 	;;; Add the child if they exist
-	(if (not(gethash c FamilyTree))
-		(setf child (make-person :name c :parents (list p1 p2)))
-		(progn (setf (person-children firstperson) c)
-			(setf (person-children secondperson) c)))
+	(if (and (not(null c)) (not(gethash c FamilyTree)))
+		(progn (setf child (make-person :name c :parents (list p1 p2)))
+			(setf (person-children firstperson) (append (person-children firstperson) (list c)))
+			(setf (person-children secondperson) (append (person-children secondperson) (list c)))))
 	;;; Add all the people to the hashtable
 	(if (not (gethash p1 FamilyTree))
 		(setf (gethash p1 FamilyTree) firstperson))
 	(if (not (gethash p2 FamilyTree))
 		(setf (gethash p2 FamilyTree) secondperson))
 	(if (not (gethash c FamilyTree))
-		(setf (gethash c FamilyTree) child)))
+		(setf (gethash c FamilyTree) child))
+	(print firstperson))
 
 ;;; Handle the W query
 (defun W(r p deadVar)
 	;;; Handle parent query
 	(if (string= r "PARENT")
 		(loop for theperson in (getParents p)
-			do (print (person-name theperson)))))
+			do (print theperson)))
+	(if (string= r "SIBLING")
+		(loop for theperson in (getSiblings p)
+			do (print theperson))))
 
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function
