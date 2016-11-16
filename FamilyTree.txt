@@ -40,6 +40,37 @@
 ;			append(siblings (second (person-parents))-children)
 ;		siblings))
 
+
+;;; Get cousins
+(defun getCousins (p deg rem)
+		
+
+
+;;; Get ancestors   TEST THIS
+(defun getAncestors (human)
+	(if (not (person-parents human))
+	nil)
+	(union (getAncestors(first (person-parents human))) (getAncestors(second (person-parents human))) (person-parents human)))
+	
+(defun getAncestorsDeep (p n)
+	(if (not(person-parents p))
+	nil)
+	(union (union(getAncestorsDeep(first(person-parents p)) (+ n 1))
+		(getAncestorsDeep(second(person-parents p)) (+ n 1)))	
+	(list (list(first(person-parents p))n) ;I think this combines the two lists in to one and then "returns" it
+	(list (second(person-parents p)) n))))
+	
+;;; assuming when you union two ancestor lists, the earliest common ancestor will be the first item?
+
+;;; opposite of getAncestorsDeep
+(defun getDescendantsDeep (p n)
+	(setf descendants(vector nil))  ;;; trying to create a list to append to after each recursive call
+	(if (not (person-children p))
+	nil)
+	(loop for theperson in (person-children p)
+		
+
+
 ;;; Handle the E query
 (defun E(p1 p2 &optional c)
 	;;; See if the first parent exists and add them if they do not
