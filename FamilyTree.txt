@@ -1,3 +1,4 @@
+;;;; -*- Mode:LISP; -*-
 ;;;; Family Tree program
 
 (defstruct person
@@ -46,24 +47,54 @@
 	(if (not (person-parents human))
 	nil)
 	(union (getAncestors(first (person-parents human))) (getAncestors(second (person-parents human))) (person-parents human)))
-	
+
+
+;;; returns list of lists where sub list: name, depth
 (defun getAncestorsDeep (p n)
-	(if (not(person-parents p))
+	(if (null(person-parents p))
 	nil)
 	(union (union(getAncestorsDeep(first(person-parents p)) (+ n 1))
 		(getAncestorsDeep(second(person-parents p)) (+ n 1)))	
-	(list (list(first(person-parents p))n) ;I think this combines the two lists in to one and then "returns" it
-	(list (second(person-parents p)) n))))
-	
-;;; assuming when you union two ancestor lists, the earliest common ancestor will be the first item?
+	(list (list(first(person-parents p))(+ 1 n)
+	(list (second(person-parents p)) (+ n 1))))))
 
-;;; opposite of getAncestorsDeep
+
+(defun getCousinLevel (human1 human2)
+  (let ((all nil) (common nil) (p1a nil) (p2a nil)))
+    (setf p1a (getAncestorsDeep human1))
+    (setf p2a (getAncestorsDeep human2))
+    (setf common (intersection (getAncestors human1) (getAncestors human2))) 
+    (when (not (null common))
+
+    (loop for i in common  doing
+          (let(( t1 nil) (t2 nil) (t3 nil))
+            (setf t1 (first (member i p1a :key#'first)))
+            (setf t2 (first (member i p2a :key#'first)))
+          
+            ;;;store in t3 s running tally of closest_ ancestor, its_source, removal, degree CHECK THESE:
+
+            (if (< (second t1)  (second t2))
+                      (setf t3 (append  t2 (list human2) (list - (second t2) (second t1)) (list (second t1 )))))
+                 
+            (if (>(second t1)  (second t2)))
+                     (setf t3 (append  t1 (list human1) (list - (second t1) (second t2)) (list (second t2 )))))))  
+ 
+;;;last line which will return the cousin degree rem
+;;; (list 'cousin __degree __removal)
+          
+                
+               
+	
+;;; remove parents from common ancestor lists
+;;; 
+
 ;(defun getDescendantsDeep (p n)
 ;	(setf descendants(vector nil))  ;;; trying to create a list to append to after each recursive call
-;	(if (not (person-children p))
+;	
+	(if (not (person-children p))
 ;	nil)
 ;	(loop for theperson in (person-children p)
-		
+		(append descendants person-children theperson)
 
 
 ;;; Handle the E query
@@ -96,6 +127,8 @@
 	(print firstperson))
 
 ;;; Handle the W query
+
+;;; read in line as a list?
 (defun W(r p deadVar)
 	;;; Handle parent query
 	(if (string= r "PARENT")
@@ -103,8 +136,9 @@
 			do (print theperson)))
 	(if (string= r "SIBLING")
 		(loop for theperson in (getSiblings p)
-			do (print theperson))))
-
+			do (print theperson)))
+	
+	
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function
 ;;; This should happen below
