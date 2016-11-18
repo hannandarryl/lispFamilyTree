@@ -143,7 +143,7 @@
                     do (print theperson)))
           ;;; Handle the ancestor query
           (if (string= r "ANCESTOR")
-              (loop for theperson in (sort (getAncestors p) #'string-lessp)
+              (loop for theperson in (sort (getAncestors (gethash p FamilyTree)) #'string-lessp)
                     do (print theperson)))
           (if (string= r "UNRELATED")
               (loop for theperson in (sort (getUnrelated p) #'string-lessp)
@@ -180,7 +180,7 @@
                 (print "NO")))
           ;;; Handle the ancestor query
           (if (string= r "ANCESTOR")
-              (if (member p1 (getAncestors p2))
+              (if (member p1 (getAncestors (gethash p2 FamilyTree)))
                   (print "YES")
                 (print "NO")))
           (if (string= r "UNRELATED")
