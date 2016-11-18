@@ -11,7 +11,7 @@
 
 ;;; Hard coding file path for now
 ;;; Note: Change this path to the absolute path of the test file you wish to run
-(setf inputFile (open "~/lispFamilyTree/testFiles/tryingWQuery.txt"))
+(setf inputFile (open "~/lispFamilyTree/testFiles/SimpleTest.txt"))
 
 ;;; Get the spouses of the person
 (defun getSpouses(p)
@@ -51,10 +51,14 @@
 
 ;;; Get ancestors   TEST THIS
 (defun getAncestors (human)
-	(if (not (person-parents human))
-	nil)
-	(union (getAncestors(first (person-parents human))) (getAncestors(second (person-parents human))) (person-parents human)))
-
+;	(if (null (person-parents (gethash human FamilyTree)))
+;            (nil)
+;          (union (getAncestors(first (person-parents (gethash human FamilyTree)))) (getAncestors(second (person-parents (gethash human FamilyTree)))) (person-parents (gethash human FamilyTree)) )))
+   (setf ancestor 
+         (loop for x in (person-parents (gethash human FamilyTree))
+               if (null (person-parents (gethash human FamilyTree)))
+               do
+               collect (getAncestors x))))
 
 ;;; returns list of lists where sub list: name, depth
 (defun getAncestorsDeep (p n)
@@ -83,8 +87,8 @@
             (if (< (second t1)  (second t2))
                       (setf t3 (append  t1 (list human2) (list - (second t2) (second t1)) (list (- (second t1) 1 )))))
                 
-            (if (>(second t1)  (second t2)))
-                     (setf t3 (append  t2 (list human1) (list - (second t1) (second t2)) (list (- (second t2) 1 )))))))) 
+            (if (> (second t1)  (second t2))
+                     (setf t3 (append  t2 (list human1) (list - (second t1) (second t2)) (list (- (second t2) 1 ))))))))) 
  
 ;;;last line which will return the cousin degree rem
 ;;; (list 'cousin __degree __removal)
@@ -119,7 +123,7 @@
 		(setf (person-spouse firstperson) (append (person-spouse firstperson) (list p2))))
 	(if (not(find p1 (person-spouse secondperson)))
 		(setf (person-spouse secondperson) (append (person-spouse secondperson) (list p1))))
-	;;; Add the child if they exist
+	;;; Add the child if they exist(
 	(if (and (not(null c)) (not(gethash c FamilyTree)))
 		(progn (setf child (make-person :name c :parents (list p1 p2)))
 			(setf (person-children firstperson) (append (person-children firstperson) (list c)))
@@ -138,7 +142,7 @@
 (defun W(r p deadVar)
   ;;; Handle spouse query
   (if (string= r "SPOUSE")
-      (loop for theperson in (sort (getSpouse p) #'string-lessp)
+      (loop for theperson in (sort (getSpouses p) #'string-lessp)
             do (print theperson)))
   ;;; Handle parent query
   (if (string= r "PARENT")
