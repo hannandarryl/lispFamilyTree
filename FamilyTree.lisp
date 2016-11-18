@@ -101,9 +101,9 @@
 		(setf secondperson (gethash p2 FamilyTree)))
 	;;; Add the spouses
 	(if (not(find p2 (person-spouse firstperson)))
-		(setf (person-spouse firstperson) (append (person-spouse firstperson) (list p2))))
+		(setf (person-spouse firstperson) (union (person-spouse firstperson) (list p2))))
 	(if (not(find p1 (person-spouse secondperson)))
-		(setf (person-spouse secondperson) (append (person-spouse secondperson) (list p1))))
+		(setf (person-spouse secondperson) (union (person-spouse secondperson) (list p1))))
 	;;; Add the child if they exist(
 	(if (and (not(null c)) (not(gethash c FamilyTree)))
 		(progn (setf child (make-person :name c :parents (list p1 p2)))
@@ -126,29 +126,29 @@
     (if (not (typep r 'cons))
         (progn
           ;;; Handle spouse query
-          (if (string= r "SPOUSE")
+          (if (string= r "spouse")
               (loop for theperson in (sort (getSpouses p) #'string-lessp)
                     do (print theperson)))
           ;;; Handle parent query
-          (if (string= r "PARENT")
+          (if (string= r "parent")
               (loop for theperson in (sort (getParents p) #'string-lessp)
                     do (print theperson)))
           ;;; Handle sibling query
-          (if (string= r "SIBLING")
+          (if (string= r "sibling")
               (loop for theperson in (sort (getSiblings p) #'string-lessp)
                     do (print theperson)))
           ;;; Handle half-sibling query
-          (if (string= r "HALF-SIBLING")
+          (if (string= r "half-sibling")
               (loop for theperson in (sort (getHalfSiblings p) #'string-lessp)
                     do (print theperson)))
           ;;; Handle the ancestor query
-          (if (string= r "ANCESTOR")
+          (if (string= r "ancestor")
               (loop for theperson in (sort (getAncestors (gethash p FamilyTree)) #'string-lessp)
                     do (print theperson)))
-          (if (string= r "UNRELATED")
+          (if (string= r "unrelated")
               (loop for theperson in (sort (getUnrelated p) #'string-lessp)
                     do (print theperson))))
-      (if (string= (first r) "COUSIN")
+      (if (string= (first r) "cousin")
           (loop for theperson in (sort (getCousins p (second r) (third r)) #'string-lessp)
                 do (print theperson))))))
 
@@ -159,35 +159,35 @@
     (if (not (typep r 'cons))
         (progn
           ;;; Handle spouse query
-          (if (string= r "SPOUSE")
+          (if (string= r "spouse")
               (if (member p1 (getSpouses p2))
                   (print "YES")
                 (print "NO")))
           ;;; Handle parent query
-          (if (string= r "PARENT")
+          (if (string= r "parent")
               (if (member p1 (getParents p2))
                   (print "YES")
                 (print "NO")))
           ;;; Handle sibling query
-          (if (string= r "SIBLING")
+          (if (string= r "sibling")
               (if (member p1 (getSiblings p2))
                   (print "YES")
                 (print "NO")))
           ;;; Handle half-sibling query
-          (if (string= r "HALF-SIBLING")
+          (if (string= r "half-sibling")
               (if (member p1 (getHalfSiblings p2))
                   (print "YES")
                 (print "NO")))
           ;;; Handle the ancestor query
-          (if (string= r "ANCESTOR")
+          (if (string= r "ancestor")
               (if (member p1 (getAncestors (gethash p2 FamilyTree)))
                   (print "YES")
                 (print "NO")))
-          (if (string= r "UNRELATED")
+          (if (string= r "unrelated")
               (if (member p1 (getUnrelated p2))
                   (print "YES")
                 (print "NO"))))
-      (if (string= (first r) "COUSIN")
+      (if (string= (first r) "cousin")
           (if (member p1 (getCousins p2 (second r) (third r)))
               (print "YES")
             (print "NO"))))))
@@ -195,25 +195,25 @@
 ;;; Handle R query
 (defun R(p1 p2 &optional deadVar)
   (if (or (null (gethash p1 FamilyTree)) (null (gethash p2 FamilyTree)))
-      (print "UNRELATED")
+      (print "unrelated")
     ;;; Handle spouse query
     (if (member p1 (getSpouses p2))
-        (print "SPOUSE")
+        (print "spouse")
       ;;; Handle parent query
       (if (member p1 (getParents p2))
-          (print "PARENT")
+          (print "parent")
         ;;; Handle sibling query
         (if (member p1 (getSiblings p2))
-            (print "SIBLING")
+            (print "sibling")
           ;;; Handle half-sibling query
           (if (member p1 (getHalfSiblings p2))
-              (print "HALF-SIBLING")
+              (print "half-sibling")
             ;;; Handle the ancestor query
             (if (member p1 (getAncestors (gethash p2 FamilyTree)))
-                (print "ANCESTOR")
+                (print "ancestor")
               (if (not (null (getCousinLevel (gethash p1 FamilyTree) (gethash p2 FamilyTree))))
-                  (progn (print "(COUSIN ") (prin1 (first (getCousinLevel (gethash p1 FamilyTree) (gethash p2 FamilyTree)))) (prin1 " ") (prin1 (second (getCousinLevel (gethash p1 FamilyTree) (gethash p2 FamilyTree)))) (prin1  ")"))
-                (print "UNRELATED")))))))))
+                  (progn (print "(cousin ") (prin1 (first (getCousinLevel (gethash p1 FamilyTree) (gethash p2 FamilyTree)))) (prin1 " ") (prin1 (second (getCousinLevel (gethash p1 FamilyTree) (gethash p2 FamilyTree)))) (prin1  ")"))
+                (print "unrelated")))))))))
 	
 ;;; Handle the various queries
 ;;; Cannot figure out how to call line from file as a function

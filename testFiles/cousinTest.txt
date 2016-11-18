@@ -7,4 +7,4 @@
 (E Zebra Quack Seven)
 (E Can Moss Petrol)
 (E Umbrella Fingers Nickel)
-(R Zebra Door)
+(R Zebra Umbrella)
