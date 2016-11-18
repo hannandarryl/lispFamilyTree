@@ -9,16 +9,6 @@
 )
 ( setf FamilyTree (make-hash-table :test 'equal))
 
-;;; Creates person "Bill" and "Jim" and puts them in hashtable FamilyTree (Jim is the parent of Bill)
-;;; (setf personTemp (make-person :name "Bill" :parents "Jim"))
-;;; (setf (gethash "Bill" FamilyTree) personTemp)
-;;; (setf personTemp (make-person :name "Jim"))
-;;; (setf (gethash "Jim" FamilyTree) personTemp)
-
-;;; Access Bill or Jim
-;;; (gethash "Bill" FamilyTree)
-;;; (gethash "Jim" FamilyTree)
-
 ;;; Hard coding file path for now
 ;;; Note: Change this path to the absolute path of the test file you wish to run
 (setf inputFile (open "~/lispFamilyTree/testFiles/tryingWQuery.txt"))
@@ -133,7 +123,9 @@
 	(if (and (not(null c)) (not(gethash c FamilyTree)))
 		(progn (setf child (make-person :name c :parents (list p1 p2)))
 			(setf (person-children firstperson) (append (person-children firstperson) (list c)))
-			(setf (person-children secondperson) (append (person-children secondperson) (list c)))))
+			(setf (person-children secondperson) (append (person-children secondperson) (list c))))
+          (if (gethash c FamilyTree)
+              (setf child (gethash c FamilyTree))))
 	;;; Add all the people to the hashtable
 	(if (not (gethash p1 FamilyTree))
 		(setf (gethash p1 FamilyTree) firstperson))
