@@ -15,25 +15,25 @@
 
 ;;; Get the spouses of the person
 (defun getSpouses(p)
-  (setf spouses (loop for spouse in (person-spouse (gethash p FamilyTree))
-                      collect spouse)))
+  (loop for spouse in (person-spouse (gethash p FamilyTree))
+                      collect spouse))
 
 ;;; Get the parents of the person
 (defun getParents(p)
-	(setf parents (loop for parent in (person-parents (gethash p FamilyTree))
-		collect parent)))
+	(loop for parent in (person-parents (gethash p FamilyTree))
+		collect parent))
 
 ;;; Get the siblings of the person
 (defun getSiblings(p)
-	(setf siblings (remove p (intersection 
+	(remove p (intersection 
 		(loop for child in (person-children (gethash (first (person-parents (gethash p FamilyTree))) FamilyTree))
 			collect child)
 		(loop for child in (person-children (gethash (second (person-parents (gethash p FamilyTree))) FamilyTree))
-			collect child)))))
+			collect child))))
 
 ;;; Get the half siblings of the person
 (defun getHalfSiblings(p)
-	(setf siblings (union (set-difference
+	(union (set-difference
 		(loop for child in (person-children (gethash (first (person-parents (gethash p FamilyTree))) FamilyTree))
 			collect child)
 		(loop for child in (person-children (gethash (second (person-parents (gethash p FamilyTree))) FamilyTree))
@@ -42,19 +42,24 @@
 		(loop for child in (person-children (gethash (second (person-parents (gethash p FamilyTree))) FamilyTree))
 			collect child)
 		(loop for child in (person-children (gethash (first (person-parents (gethash p FamilyTree))) FamilyTree))
-			collect child)))))
+			collect child))))
 
 ;;; Get cousins
 ;(defun getCousins (p deg rem)
 		
 
 
-;;; Get ancestors   TEST THIS
+;;; Get ancestors
 (defun getAncestors (human)
 	(if (not (person-parents human))
 	nil)
 	(union (getAncestors(first (person-parents human))) (getAncestors(second (person-parents human))) (person-parents human)))
 
+;;; Get unrelated
+(defun getUnrelated(p)
+  
+(defun getKeys()
+  (loop for key being the hash-keys of FamilyTree collect key))
 
 ;;; returns list of lists where sub list: name, depth
 (defun getAncestorsDeep (p n)
