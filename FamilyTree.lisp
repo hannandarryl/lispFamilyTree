@@ -116,11 +116,11 @@
 		(setf (gethash p1 FamilyTree) firstperson))
 	(if (not (gethash p2 FamilyTree))
 		(setf (gethash p2 FamilyTree) secondperson))
-	(if (not (gethash c FamilyTree))
+	(if (and (not(null c)) (not (gethash c FamilyTree)))
 		(setf (gethash c FamilyTree) child)))
 
 ;;; Handle the W query
-(defun W(r p deadVar)
+(defun W(r p &optional deadVar)
   (if (null (gethash p FamilyTree))
       (print '())
     (if (not (typep r 'cons))
@@ -193,7 +193,7 @@
             (print "NO"))))))
 
 ;;; Handle R query
-(defun R(p1 p2 deadVar)
+(defun R(p1 p2 &optional deadVar)
   (if (or (null (gethash p1 FamilyTree)) (null (gethash p2 FamilyTree)))
       (print "UNRELATED")
     ;;; Handle spouse query
@@ -219,7 +219,7 @@
 ;;; Cannot figure out how to call line from file as a function
 ;;; This should happen below
 (defun processFile()
-	(loop for line = (read *STANDARD-INPUT* nil nil)
+	(loop for line = (read *standard-input* nil nil)
 		while line
 		do (funcall (first line) (second line) (third line) (fourth line))))
 

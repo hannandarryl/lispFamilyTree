@@ -6,4 +6,5 @@
 (E Umbrella Raincoat Door)
 (E Zebra Quack Seven)
 (E Can Moss Petrol)
-(W Cousin Seven Umbrella)
+(E Umbrella Fingers Nickel)
+(R Zebra Door)
